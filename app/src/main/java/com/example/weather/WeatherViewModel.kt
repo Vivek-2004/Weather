@@ -24,18 +24,14 @@ class WeatherViewModel: ViewModel() {
 
     private var isDataFetched = false
 
-    init {
-        fetchWeather()
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
-    fun fetchWeather() {
+    fun fetchWeather(latitude : Double, longitude : Double) {
         if (isDataFetched) return
 
         viewModelScope.launch {
             var time = ""
             try {
-                val weatherData = _weatherService.getWeather()
+                val weatherData = _weatherService.getWeather(latitude,longitude)
                 temperature = "${weatherData.current.apparent_temperature} °C"
                 time = "${weatherData.current.time}:00Z"
                 isDataFetched = true

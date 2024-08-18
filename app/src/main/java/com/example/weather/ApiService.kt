@@ -3,6 +3,7 @@ package com.example.weather
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 private val retrofit = Retrofit
     .Builder()
@@ -12,10 +13,14 @@ private val retrofit = Retrofit
 
 val weatherservice = retrofit.create(ApiService::class.java)
 
-interface ApiService{
-
-    @GET("forecast?latitude=23.51&longitude=87.37&current=apparent_temperature")
-    suspend fun getWeather():WeatherResponse
+interface ApiService
+{
+    @GET("forecast")
+    suspend fun getWeather(
+        @Query("latitude") latitude : Double,
+        @Query("longitude") longitude : Double,
+        @Query("current") current : String = "apparent_temperature"
+    ) : WeatherResponse
 }
 
 /*

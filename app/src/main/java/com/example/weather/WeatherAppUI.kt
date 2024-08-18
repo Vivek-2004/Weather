@@ -22,13 +22,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun WeatherAppUI(weatherViewModel: WeatherViewModel = viewModel()) {
+fun WeatherApp(weatherViewModel: WeatherViewModel = viewModel(), city: String) {
 
     val temperature by weatherViewModel::temperature
     val date by weatherViewModel::date
 
     Scaffold(
-        topBar = { TopBar(city = "Kolkata", date = date) }
+        topBar = { TopBar(city = city, date = date) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -39,7 +39,7 @@ fun WeatherAppUI(weatherViewModel: WeatherViewModel = viewModel()) {
             WeatherInfoCard(
                 temperature = temperature,
                 weatherCondition = "Sunny",
-                iconRes = R.drawable.ic_launcher_foreground
+                iconRes = R.drawable.sunny
             )
             Spacer(modifier = Modifier.height(16.dp))
             AdditionalInfo(

@@ -15,8 +15,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.weather.View
+import com.example.weather.TestView
+import com.example.weather.WeatherApp
 import com.example.weather.WeatherViewModel
+import com.example.weather.getCityName
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -29,6 +31,7 @@ fun Location(weatherViewModel: WeatherViewModel = viewModel())
 
     var latitude by remember { mutableStateOf(0.00) }
     var longitude by remember { mutableStateOf(0.00) }
+    var city by remember { mutableStateOf("") }
 
     val requestLocationPermission = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission() ) {
             isGranted ->
@@ -36,6 +39,8 @@ fun Location(weatherViewModel: WeatherViewModel = viewModel())
             getLastLocation(context, fusedLocationClient) { lat, long ->
                 latitude = lat
                 longitude = long
+                city = getCityName(context, latitude, longitude).toString()
+                weatherViewModel.fetchWeather(latitude, longitude)
             }
         }
     }
@@ -43,7 +48,9 @@ fun Location(weatherViewModel: WeatherViewModel = viewModel())
         requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
-    View(weatherViewModel, latitude, longitude)
+    WeatherApp(weatherViewModel, city = city)
+
+    //TestView(weatherViewModel, latitude, longitude, city)
 }
 
 fun getLastLocation(
@@ -60,9 +67,9 @@ fun getLastLocation(
                 }
             }
             .addOnFailureListener {
-                // Handle failure in getting location
+                // TODO Handle failure getting location
             }
     } else {
-        // Handles when location permission is not granted
+        // TODO Handles when location permission is not granted
     }
 }

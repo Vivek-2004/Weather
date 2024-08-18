@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun View(weatherViewModel: WeatherViewModel = viewModel(), latitude : Double, longitude : Double)
+fun TestView(weatherViewModel: WeatherViewModel = viewModel(), latitude : Double, longitude : Double, city : String)
 {
     // THIS METHOD IS MORE STRAIGHTFORWARD AND THE UI GETS UPDATED WHENEVER THESE IS A CHANGE IN THE weatherViewModel()
     val temperature by weatherViewModel::temperature
@@ -30,5 +30,6 @@ fun View(weatherViewModel: WeatherViewModel = viewModel(), latitude : Double, lo
         Text( text = "Temperature : $temperature", textAlign = TextAlign.Center, fontSize = 30.sp, fontWeight = FontWeight.Bold)
         Text( text = "Latitude : $latitude", textAlign = TextAlign.Center, fontSize = 30.sp, fontWeight = FontWeight.Bold)
         Text( text = "Longitude : $longitude", textAlign = TextAlign.Center, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+        Text( text = "City : $city", textAlign = TextAlign.Center, fontSize = 30.sp, fontWeight = FontWeight.Bold)
     }
 }
