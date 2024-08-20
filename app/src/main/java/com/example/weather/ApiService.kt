@@ -24,12 +24,12 @@ interface ApiService
 }
 
 /*
-    https://api.open-meteo.com/v1/forecast?latitude=23.51&longitude=87.37&current=apparent_temperature
+https://api.open-meteo.com/v1/forecast?latitude=23.51&longitude=87.37&current=relative_humidity_2m,apparent_temperature,is_day,precipitation,wind_speed_10m&wind_speed_unit=ms
 
 {
   "latitude": 23.5,
   "longitude": 87.375,
-  "generationtime_ms": 0.0389814376831055,
+  "generationtime_ms": 0.0640153884887695,
   "utc_offset_seconds": 0,
   "timezone": "GMT",
   "timezone_abbreviation": "GMT",
@@ -37,12 +37,20 @@ interface ApiService
   "current_units": {
     "time": "iso8601",
     "interval": "seconds",
-    "apparent_temperature": "°C"
+    "relative_humidity_2m": "%",
+    "apparent_temperature": "°C",
+    "is_day": "",
+    "precipitation": "mm",
+    "wind_speed_10m": "m/s"
   },
   "current": {
-    "time": "2024-07-29T16:45",
+    "time": "2024-08-20T21:30",
     "interval": 900,
-    "apparent_temperature": 35.2
+    "relative_humidity_2m": 93,
+    "apparent_temperature": 33,
+    "is_day": 0,
+    "precipitation": 0,
+    "wind_speed_10m": 1.39
   }
 }
  */
