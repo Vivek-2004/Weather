@@ -16,11 +16,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
+// This Composable is Created to Test whether all the API requests fetches correctly.
 fun TestView(weatherViewModel: WeatherViewModel = viewModel(), latitude : Double, longitude : Double, city : String)
 {
     // THIS METHOD IS MORE STRAIGHTFORWARD AND THE UI GETS UPDATED WHENEVER THESE IS A CHANGE IN THE weatherViewModel()
     val temperature by weatherViewModel::temperature
     val date by weatherViewModel::date
+    val humidity by weatherViewModel::humidity
 
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -31,5 +33,6 @@ fun TestView(weatherViewModel: WeatherViewModel = viewModel(), latitude : Double
         Text( text = "Latitude : $latitude", textAlign = TextAlign.Center, fontSize = 30.sp, fontWeight = FontWeight.Bold)
         Text( text = "Longitude : $longitude", textAlign = TextAlign.Center, fontSize = 30.sp, fontWeight = FontWeight.Bold)
         Text( text = "City : $city", textAlign = TextAlign.Center, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+        Text( text = "Humidity : $humidity %", textAlign = TextAlign.Center, fontSize = 30.sp, fontWeight = FontWeight.Bold)
     }
 }

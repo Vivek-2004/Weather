@@ -26,6 +26,10 @@ fun WeatherApp(weatherViewModel: WeatherViewModel = viewModel(), city: String) {
 
     val temperature by weatherViewModel::temperature
     val date by weatherViewModel::date
+    val humidity by weatherViewModel::humidity
+    val wind by weatherViewModel::wind
+    val precipitation by weatherViewModel::precipitation
+    val isDay by weatherViewModel::isDay
 
     Scaffold(
         topBar = { TopBar(city = city, date = date) }
@@ -36,24 +40,25 @@ fun WeatherApp(weatherViewModel: WeatherViewModel = viewModel(), city: String) {
                 .padding(paddingValues)
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
+
             WeatherInfoCard(
-                temperature = temperature,
-                weatherCondition = "Sunny",
-                iconRes = R.drawable.sunny
+                temperature = "$temperature °C",
+                day = if(isDay==1) "Day" else if(isDay==0) "Night" else "Error",
+                iconRes = if(isDay==1) R.drawable.sun else if(isDay==0) R.drawable.moon else R.drawable.ic_launcher_foreground
             )
+
             Spacer(modifier = Modifier.height(16.dp))
+
             AdditionalInfo(
-                humidity = "65%",
-                windSpeed = "15 km/h",
-                pressure = "1015 hPa"
+                humidity = "$humidity%",
+                wind = "$wind m/s",
+                precipitation = "$precipitation mm"
             )
+
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "7-Day Forecast",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+
+            Text(text = "7-Day Forecast", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 8.dp))
+
             ForecastList(
                 forecastData = listOf(
                     "Mon" to "26°C",
@@ -83,7 +88,7 @@ fun TopBar(city: String, date: String) {
 }
 
 @Composable
-fun WeatherInfoCard(temperature: String, weatherCondition: String, iconRes: Int) {
+fun WeatherInfoCard(temperature: String, day: String, iconRes: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -100,7 +105,7 @@ fun WeatherInfoCard(temperature: String, weatherCondition: String, iconRes: Int)
         ) {
             Column {
                 Text(text = temperature, fontSize = 40.sp, color = MaterialTheme.colorScheme.onPrimary)
-                Text(text = weatherCondition, fontSize = 20.sp, color = MaterialTheme.colorScheme.onPrimary)
+                Text(text = day, fontSize = 20.sp, color = MaterialTheme.colorScheme.onPrimary)
             }
             Image(
                 painter = painterResource(id = iconRes),
@@ -113,14 +118,14 @@ fun WeatherInfoCard(temperature: String, weatherCondition: String, iconRes: Int)
 }
 
 @Composable
-fun AdditionalInfo(humidity: String, windSpeed: String, pressure: String) {
+fun AdditionalInfo(humidity: String, wind: String, precipitation: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         InfoItem(label = "Humidity", value = humidity)
-        InfoItem(label = "Wind", value = windSpeed)
-        InfoItem(label = "Pressure", value = pressure)
+        InfoItem(label = "Wind Speed", value = wind)
+        InfoItem(label = "Precipitation", value = precipitation)
     }
 }
 

@@ -15,14 +15,21 @@ data class WeatherResponse(
 data class CurrentUnits(
     val time : String,
     val interval : String,
+    val relative_humidity_2m : String,
     val apparent_temperature : String,
-
+    val is_day : String,
+    val precipitation : String,
+    val wind_speed_10m : String
 )
 
 data class Current(
     val time : String,
     val interval : Int,
-    val apparent_temperature : Double
+    val relative_humidity_2m : Int,
+    val apparent_temperature : Double,
+    val is_day : Int,
+    val precipitation : Int,
+    val wind_speed_10m : Double
 )
 
 /*
@@ -47,14 +54,14 @@ data class Current(
     "time": "2024-08-20T21:30",
     "interval": 900,
     "relative_humidity_2m": 93,
-    "apparent_temperature": 33,
+    "apparent_temperature": 33.2,
     "is_day": 0,
     "precipitation": 0,
     "wind_speed_10m": 1.39
   }
 }
 
- // Old Api
+// Old Api Used in the app
 {
   "latitude": 23.5,
   "longitude": 87.375,

@@ -22,6 +22,17 @@ class WeatherViewModel: ViewModel() {
     var date by mutableStateOf("Date")
         private set
 
+    var humidity by mutableStateOf("Humidity")
+        private set
+
+    var wind by mutableStateOf("Wind")
+        private set
+
+    var precipitation by mutableStateOf("Rain")
+        private set
+
+    var isDay by mutableStateOf(-1)
+
     private var isDataFetched = false
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -32,8 +43,12 @@ class WeatherViewModel: ViewModel() {
             var time = ""
             try {
                 val weatherData = _weatherService.getWeather(latitude,longitude)
-                temperature = "${weatherData.current.apparent_temperature} °C"
+                temperature = weatherData.current.apparent_temperature.toString()
                 time = "${weatherData.current.time}:00Z"
+                humidity = weatherData.current.relative_humidity_2m.toString()
+                wind = weatherData.current.wind_speed_10m.toString()
+                precipitation = weatherData.current.precipitation.toString()
+                isDay = weatherData.current.is_day
                 isDataFetched = true
             } catch (e: Exception) {
                 temperature = "Error Fetching"

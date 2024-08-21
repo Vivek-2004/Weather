@@ -19,9 +19,12 @@ interface ApiService
     suspend fun getWeather(
         @Query("latitude") latitude : Double,
         @Query("longitude") longitude : Double,
-        @Query("current") current : String = "apparent_temperature"
+        @Query("current") current : String = "relative_humidity_2m,apparent_temperature,is_day,precipitation,wind_speed_10m",
+        @Query("wind_speed_unit") unit: String = "ms"
     ) : WeatherResponse
 }
+
+
 
 /*
 https://api.open-meteo.com/v1/forecast?latitude=23.51&longitude=87.37&current=relative_humidity_2m,apparent_temperature,is_day,precipitation,wind_speed_10m&wind_speed_unit=ms
