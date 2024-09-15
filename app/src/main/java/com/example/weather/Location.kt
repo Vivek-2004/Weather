@@ -15,7 +15,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.weather.TestView
 import com.example.weather.WeatherApp
 import com.example.weather.WeatherViewModel
 import com.example.weather.getCityName
@@ -49,8 +48,6 @@ fun Location(weatherViewModel: WeatherViewModel = viewModel())
     }
 
     WeatherApp(weatherViewModel, city = city)
-
-    //TestView(weatherViewModel, latitude, longitude, city)
 }
 
 fun getLastLocation(
