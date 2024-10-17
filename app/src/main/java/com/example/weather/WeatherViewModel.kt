@@ -53,7 +53,9 @@ class WeatherViewModel: ViewModel() {
         viewModelScope.launch {
             try {
                 val weatherData = _weatherService.getWeather(post)
-                updateWeatherData(weatherData)
+                updateCurrentWeatherData(weatherData)
+                val weekWeatherData = _weatherService.getWeekWeather(post)
+                updateWeekWeatherData(weekWeatherData)
             }
             catch (e: Exception) {
                 temperature = e.toString()
@@ -61,11 +63,11 @@ class WeatherViewModel: ViewModel() {
         }
     }
 
-    private fun updateWeatherData(weatherData : WeatherResponse){
+    private fun updateCurrentWeatherData(weatherData : WeatherResponse){
         temperature = weatherData.main.temp.toString()
         humidity = weatherData.main.humidity.toString()
         wind = (Math.round(weatherData.wind.speed * 3.6 * 10) / 10.0).toString()
-        precipitation = weatherData.rain?.mm?.toString() ?: "-1"
+        precipitation = weatherData.rain?.mm?.toString() ?: "0"
         weatherCode = weatherData.weather.first().id
         description = weatherData.weather.first().main
         sunrise = dateFormatter(weatherData.sys.sunrise)
@@ -76,6 +78,10 @@ class WeatherViewModel: ViewModel() {
         lat = weatherData.coord.lat
         lon = weatherData.coord.lon
         name = weatherData.name
+    }
+
+    private fun updateWeekWeatherData(weatherData: WeekWeatherResponse){
+
     }
 
     private fun dateFormatter(timeStamp : Long) : String {

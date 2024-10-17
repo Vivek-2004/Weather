@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -15,7 +14,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,35 +51,22 @@ fun WeatherApp(weatherViewModel: WeatherViewModel = viewModel()) {
 
             TopBarWithSearch()
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 8.dp)
-            ) {
-                item {
-                    TodayWeatherCard(
-                        temperature = temp,
-                        weatherDescription = description,
-                        location = city,
-                        day = day
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
+            TodayWeatherCard(
+                temperature = temp,
+                weatherDescription = description,
+                location = city,
+                day = day
+            )
 
-                item {
-                    TodayWeatherDetailsSection(
-                        windSpeed = wind,
-                        humidity = humidity,
-                        sunrise = sunrise,
-                        sunset = sunset,
-                        precipitation = precipitation,
-                        visibility = visibility.toString()
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-
-                item {
-                    WeekWeatherSection()
-                }
-            }
+            TodayWeatherDetailsSection(
+                windSpeed = wind,
+                humidity = humidity,
+                sunrise = sunrise,
+                sunset = sunset,
+                precipitation = precipitation,
+                visibility = visibility.toString()
+            )
+//                    WeekWeatherSection()
         }
     }
 }
@@ -93,13 +78,11 @@ fun TopBarWithSearch(weatherViewModel: WeatherViewModel = viewModel()) {
     var searchQuery by remember { mutableStateOf("") }
 
     val onSearch: (WeatherViewModel, String) -> Unit = { weatherViewModel, post ->
-        run {
-            weatherViewModel.fetchWeather(post)
-        }
+        weatherViewModel.fetchWeather(post)
     }
 
     TopAppBar(
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 28.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp, start = 5.dp, end = 16.dp),
         colors = TopAppBarDefaults.topAppBarColors( containerColor = Color.Transparent, titleContentColor = Color.White ),
         title = {
             TextField( value = searchQuery, onValueChange = { newQuery -> searchQuery = newQuery },
@@ -125,7 +108,7 @@ fun TopBarWithSearch(weatherViewModel: WeatherViewModel = viewModel()) {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
                 ),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(24.dp),
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -137,9 +120,9 @@ fun TodayWeatherCard( temperature: String, weatherDescription: String, location:
     Card( shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.E)),
         elevation = CardDefaults.cardElevation(12.dp),
-        modifier = Modifier.fillMaxWidth().shadow(12.dp, RoundedCornerShape(24.dp)).padding(8.dp).clip(RoundedCornerShape(24.dp))
+        modifier = Modifier.fillMaxWidth().shadow(12.dp, RoundedCornerShape(24.dp)).padding(vertical = 8.dp, horizontal = 16.dp).clip(RoundedCornerShape(24.dp))
     ) {
-        Column( modifier = Modifier.fillMaxWidth().padding(24.dp)
+        Column( modifier = Modifier.fillMaxWidth().padding(18.dp)
         ) {
             Text( text = location,
                 style = MaterialTheme.typography.headlineMedium.copy(
@@ -157,7 +140,7 @@ fun TodayWeatherCard( temperature: String, weatherDescription: String, location:
                 ),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
@@ -170,7 +153,7 @@ fun TodayWeatherCard( temperature: String, weatherDescription: String, location:
                         color = Color.Blue
                     )
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(14.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.sun),
                     contentDescription = "Sunny Icon",
@@ -199,15 +182,10 @@ fun TodayWeatherDetailsSection(
     precipitation : String,
     visibility : String
 ) {
-    Card(
-        shape = RoundedCornerShape(16.dp),
+    Card( shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.E)),
-        elevation = CardDefaults.cardElevation(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .shadow(12.dp, RoundedCornerShape(16.dp))
-            .padding(horizontal = 8.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(16.dp))
+        elevation = CardDefaults.cardElevation(12.dp),
+        modifier = Modifier.fillMaxWidth().shadow(12.dp, RoundedCornerShape(24.dp)).padding(vertical = 8.dp, horizontal = 16.dp).clip(RoundedCornerShape(24.dp))
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(16.dp)
@@ -218,7 +196,7 @@ fun TodayWeatherDetailsSection(
                 WeatherDetailItem( label = "Wind", value = "$windSpeed km/h" )
                 WeatherDetailItem( label = "Humidity", value = "$humidity %")
             }
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(18.dp))
 
             Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween )
             {
@@ -233,7 +211,7 @@ fun TodayWeatherDetailsSection(
 
                 WeatherDetailItem( label = "Sunset", value = sunset )
             }
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(18.dp))
 
             Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly )
             {
