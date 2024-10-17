@@ -64,15 +64,15 @@ class WeatherViewModel: ViewModel() {
     }
 
     private fun updateCurrentWeatherData(weatherData : WeatherResponse){
-        temperature = weatherData.main.temp.toString()
+        temperature = String.format("%.1f", weatherData.main.temp)
         humidity = weatherData.main.humidity.toString()
-        wind = (Math.round(weatherData.wind.speed * 3.6 * 10) / 10.0).toString()
+        wind = String.format("%.1f", weatherData.wind.speed * 3.6)
         precipitation = weatherData.rain?.mm?.toString() ?: "0"
         weatherCode = weatherData.weather.first().id
         description = weatherData.weather.first().main
         sunrise = dateFormatter(weatherData.sys.sunrise)
         sunset = dateFormatter(weatherData.sys.sunset)
-        visibility = (weatherData.visibility / 1000).toInt()
+        visibility = (weatherData.visibility / 1000)
         day = dayFormatter(weatherData.dt)
         name = weatherData.name
         lat = weatherData.coord.lat

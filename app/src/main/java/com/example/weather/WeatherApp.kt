@@ -146,7 +146,7 @@ fun TodayWeatherCard( temperature: String, weatherDescription: String, location:
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = temperature,
+                    text = "$temperature °C",
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 48.sp,
