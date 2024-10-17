@@ -1,5 +1,7 @@
 package com.example.weather
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,24 +15,40 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weather.ui.theme.WeatherTheme
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ComposeUI() {
+fun WeatherApp(weatherViewModel: WeatherViewModel = viewModel()) {
+
+    val temp by weatherViewModel::temperature
+    val wind by weatherViewModel::wind
+    val humidity by weatherViewModel::humidity
+    val precipitation by weatherViewModel::precipitation
+    val description by weatherViewModel::description
+    val sunrise by weatherViewModel::sunrise
+    val sunset by weatherViewModel::sunset
+    val visibility by weatherViewModel::visibility
+    val day by weatherViewModel::day
+    val city by weatherViewModel::name
+
     WeatherTheme {
         Column( modifier = Modifier.fillMaxSize().background(
             brush = Brush.verticalGradient(
-                colors = listOf(colorResource(R.color.blue),
-                    colorResource(R.color.teal_200),
-                    colorResource(R.color.teal_700),
-                    colorResource(R.color.purple_500),
-                    colorResource(R.color.purple_200 ))))
+                colors = listOf(
+                    colorResource(R.color.A),
+                    colorResource(R.color.B),
+                    colorResource(R.color.C),
+                    colorResource(R.color.D),
+                    colorResource(R.color.E)
+                )))
         ) {
 
             TopBarWithSearch()
@@ -40,22 +58,23 @@ fun ComposeUI() {
             ) {
                 item {
                     TodayWeatherCard(
-                        temperature = "25°C",
-                        weatherDescription = "Sunny",
-                        location = "New York",
-                        day = "Monday"
+                        temperature = temp,
+                        weatherDescription = description,
+                        location = city,
+                        day = day
                     )
-
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
                 item {
                     TodayWeatherDetailsSection(
-                        windSpeed = "15 km/h",
-                        humidity = "65%",
-                        pressure = "1015 hPa"
+                        windSpeed = wind,
+                        humidity = humidity,
+                        sunrise = sunrise,
+                        sunset = sunset,
+                        precipitation = precipitation,
+                        visibility = visibility.toString()
                     )
-
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
@@ -67,36 +86,34 @@ fun ComposeUI() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarWithSearch() {
-    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+fun TopBarWithSearch(weatherViewModel: WeatherViewModel = viewModel()) {
+    var searchQuery by remember { mutableStateOf("") }
+
+    val onSearch: (WeatherViewModel, String) -> Unit = { weatherViewModel, post ->
+        run {
+            weatherViewModel.fetchWeather(post)
+        }
+    }
 
     TopAppBar(
         modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp, start = 8.dp, end = 28.dp),
         colors = TopAppBarDefaults.topAppBarColors( containerColor = Color.Transparent, titleContentColor = Color.White ),
         title = {
-            TextField( value = searchQuery,
-                onValueChange = { newQuery ->
-                    searchQuery = newQuery
-                },
-                placeholder = {
-                    Text(
-                        "Search for a Location...",
-                        color = Color.White.copy(alpha = 0.7f)
-                    )
-                },
+            TextField( value = searchQuery, onValueChange = { newQuery -> searchQuery = newQuery },
+                placeholder = { Text("Enter Location...", color = Color.White.copy(alpha = 0.7f) ) },
                 singleLine = true,
-                leadingIcon = {
-                    Icon( painter = painterResource(id = R.drawable.ic_search),
-                        contentDescription = "Search Icon",
-                        tint = Color.White )
+                leadingIcon = { Icon( painter = painterResource(id = R.drawable.ic_search),
+                    contentDescription = "Search Icon",
+                    tint = Color.White )
                 },
-                trailingIcon = if (searchQuery.text.isNotEmpty()) {
+                trailingIcon = if (searchQuery.isNotEmpty()) {
                     {
-                        IconButton(onClick = { searchQuery = TextFieldValue("") }) {
-                            Icon( painter = painterResource(id = R.drawable.ic_close),
-                                contentDescription = "Clear",
+                        IconButton(onClick = { onSearch(weatherViewModel, searchQuery) }) {
+                            Icon( painter = painterResource(id = R.drawable.arrow_enter),
+                                contentDescription = "Enter",
                                 tint = Color.White )
                         }
                     }
@@ -118,7 +135,7 @@ fun TopBarWithSearch() {
 @Composable
 fun TodayWeatherCard( temperature: String, weatherDescription: String, location: String, day: String) {
     Card( shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.E)),
         elevation = CardDefaults.cardElevation(12.dp),
         modifier = Modifier.fillMaxWidth().shadow(12.dp, RoundedCornerShape(24.dp)).padding(8.dp).clip(RoundedCornerShape(24.dp))
     ) {
@@ -155,7 +172,7 @@ fun TodayWeatherCard( temperature: String, weatherDescription: String, location:
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.sun), // Ensure you have a sun icon in your resources
+                    painter = painterResource(id = R.drawable.sun),
                     contentDescription = "Sunny Icon",
                     tint = Color(0xFFFFC107),
                     modifier = Modifier.size(48.dp)
@@ -177,11 +194,14 @@ fun TodayWeatherCard( temperature: String, weatherDescription: String, location:
 fun TodayWeatherDetailsSection(
     windSpeed: String,
     humidity: String,
-    pressure: String
+    sunrise : String,
+    sunset : String,
+    precipitation : String,
+    visibility : String
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.E)),
         elevation = CardDefaults.cardElevation(8.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -194,22 +214,31 @@ fun TodayWeatherDetailsSection(
         ) {
             Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly )
             {
-                WeatherDetailItem( label = "Sunrise", value = windSpeed )
-                WeatherDetailItem( label = "Sunset", value = humidity )
+
+                WeatherDetailItem( label = "Wind", value = "$windSpeed km/h" )
+                WeatherDetailItem( label = "Humidity", value = "$humidity %")
             }
             Spacer(Modifier.height(24.dp))
 
             Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween )
             {
-                WeatherDetailItem( label = "Wind", value = windSpeed )
-                WeatherDetailItem( label = "Humidity", value = humidity )
+                WeatherDetailItem( label = "Sunrise", value = sunrise )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.sun),
+                    contentDescription = "Weather Icon",
+                    tint = Color(0xFFFFC107),
+                    modifier = Modifier.size(40.dp)
+                )
+
+                WeatherDetailItem( label = "Sunset", value = sunset )
             }
             Spacer(Modifier.height(24.dp))
 
             Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly )
             {
-                WeatherDetailItem( label = "Visibility", value = windSpeed )
-                WeatherDetailItem( label = "UV Index", value = humidity )
+                WeatherDetailItem( label = "Precipitation", value = "$precipitation mm" )
+                WeatherDetailItem( label = "Visibility", value = "$visibility km" )
             }
         }
     }
@@ -222,14 +251,14 @@ fun WeatherDetailItem(label: String, value: String) {
             text = label,
             fontSize = 18.sp,
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = Color(0xFF757575)
+                fontWeight = FontWeight.Bold,
+                color = Color.Blue
             )
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
             style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold,
                 color = Color.Blue
             )
         )
@@ -264,7 +293,7 @@ fun WeekWeatherCard(
 ) {
     Card(
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE1F5FE)),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.E)),
         elevation = CardDefaults.cardElevation(6.dp),
         modifier = Modifier
             .width(200.dp)
@@ -277,7 +306,7 @@ fun WeekWeatherCard(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.linearGradient(
-                        colors = listOf(Color.White, Color(0xFFE3F2FD))
+                        colors = listOf(colorResource(R.color.E), colorResource(R.color.E))
                     )
                 )
                 .padding(16.dp)
@@ -316,7 +345,7 @@ fun WeekWeatherCard(
             Text(
                 text = weatherDescription,
                 style = MaterialTheme.typography.bodyLarge.copy(
-                    color = Color(0xFF757575)
+                    color = Color.Blue
                 )
             )
             Spacer(modifier = Modifier.height(8.dp))

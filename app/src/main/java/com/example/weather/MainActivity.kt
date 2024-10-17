@@ -25,8 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ComposeUI()
-                    //Location(weatherViewModel)
+                    Location(weatherViewModel)
                 }
             }
         }

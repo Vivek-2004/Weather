@@ -1,84 +1,82 @@
 package com.example.weather
 
 data class WeatherResponse(
-    val latitude : Double,
-    val longitude : Double,
-    val generationtime_ms : Double,
-    val utc_offset_seconds : Int,
-    val timezone : String,
-    val timezone_abbreviation : String,
-    val elevation : Int,
-    val current_units : CurrentUnits,
-    val current : Current
+    val coord: Coord,
+    val weather: List<Weather>,
+    val base: String,
+    val main: Main,
+    val visibility: Int,
+    val wind: Wind,
+    val rain: Rain?,
+    val clouds: Clouds,
+    val dt: Long,
+    val sys: Sys,
+    val timezone: Int,
+    val id: Int,
+    val name: String,
+    val cod: Int
 )
 
-data class CurrentUnits(
-    val time : String,
-    val interval : String,
-    val relative_humidity_2m : String,
-    val apparent_temperature : String,
-    val is_day : String,
-    val precipitation : String,
-    val wind_speed_10m : String
-)
+data class Rain(val mm : Double?)
 
-data class Current(
-    val time : String,
-    val interval : Int,
-    val relative_humidity_2m : Int,
-    val apparent_temperature : Double,
-    val is_day : Int,
-    val precipitation : Int,
-    val wind_speed_10m : Double
-)
+data class Clouds(val all: Int)
+
+data class Coord(val lon: Double, val lat: Double)
+
+data class Weather(val id: Int, val main: String, val description: String, val icon: String)
+
+data class Wind(val speed: Double, val deg: Int, val gust: Double)
+
+data class Sys(val country: String, val sunrise: Long, val sunset: Long)
+
+data class Main(val temp: Double, val feels_like: Double, val temp_min: Double, val temp_max: Double,
+                val pressure: Int, val humidity: Int, val sea_level: Int, val grnd_level: Int)
 
 /*
+
 {
-  "latitude": 23.5,
-  "longitude": 87.375,
-  "generationtime_ms": 0.0640153884887695,
-  "utc_offset_seconds": 0,
-  "timezone": "GMT",
-  "timezone_abbreviation": "GMT",
-  "elevation": 80,
-  "current_units": {
-    "time": "iso8601",
-    "interval": "seconds",
-    "relative_humidity_2m": "%",
-    "apparent_temperature": "°C",
-    "is_day": "",
-    "precipitation": "mm",
-    "wind_speed_10m": "m/s"
+  "coord": {
+    "lon": 87.37,
+    "lat": 23.51
   },
-  "current": {
-    "time": "2024-08-20T21:30",
-    "interval": 900,
-    "relative_humidity_2m": 93,
-    "apparent_temperature": 33.2,
-    "is_day": 0,
-    "precipitation": 0,
-    "wind_speed_10m": 1.39
-  }
+  "weather": [
+    {
+      "id": 804,
+      "main": "Clouds",
+      "description": "overcast clouds",
+      "icon": "04n"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 26.55,
+    "feels_like": 26.55,
+    "temp_min": 26.55,
+    "temp_max": 26.55,
+    "pressure": 1010,
+    "humidity": 78,
+    "sea_level": 1010,
+    "grnd_level": 1001
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 2.61,
+    "deg": 180,
+    "gust": 3.49
+  },
+  "clouds": {
+    "all": 100
+  },
+  "dt": 1729090889,
+  "sys": {
+    "country": "IN",
+    "sunrise": 1729037276,
+    "sunset": 1729079031
+  },
+  "timezone": 19800,
+  "id": 1272175,
+  "name": "Durgapur",
+  "cod": 200
 }
 
-// Old Api Used in the app
-{
-  "latitude": 23.5,
-  "longitude": 87.375,
-  "generationtime_ms": 0.0389814376831055,
-  "utc_offset_seconds": 0,
-  "timezone": "GMT",
-  "timezone_abbreviation": "GMT",
-  "elevation": 80,
-  "current_units": {
-    "time": "iso8601",
-    "interval": "seconds",
-    "apparent_temperature": "°C"
-  },
-  "current": {
-    "time": "2024-07-29T16:45",
-    "interval": 900,
-    "apparent_temperature": 35.2
-  }
-}
  */

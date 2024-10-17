@@ -1,3 +1,5 @@
+package com.example.weather
+
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -15,11 +17,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.weather.WeatherApp
-import com.example.weather.WeatherViewModel
-import com.example.weather.getCityName
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import android.location.Address
+import android.location.Geocoder
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -30,7 +32,7 @@ fun Location(weatherViewModel: WeatherViewModel = viewModel())
 
     var latitude by remember { mutableStateOf(0.00) }
     var longitude by remember { mutableStateOf(0.00) }
-    var city by remember { mutableStateOf("") }
+    var post by remember { mutableStateOf("") }
 
     val requestLocationPermission = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission() ) {
             isGranted ->
@@ -38,8 +40,9 @@ fun Location(weatherViewModel: WeatherViewModel = viewModel())
             getLastLocation(context, fusedLocationClient) { lat, long ->
                 latitude = lat
                 longitude = long
-                city = getCityName(context, latitude, longitude).toString()
-                weatherViewModel.fetchWeather(latitude, longitude)
+                post = getPostalCode(context, latitude, longitude)
+
+                weatherViewModel.fetchWeather(post)
             }
         }
     }
@@ -47,7 +50,7 @@ fun Location(weatherViewModel: WeatherViewModel = viewModel())
         requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
-    WeatherApp(weatherViewModel, city = city)
+    WeatherApp(weatherViewModel)
 }
 
 fun getLastLocation(
@@ -67,6 +70,22 @@ fun getLastLocation(
                 // TODO Handle failure getting location
             }
     } else {
-        // TODO Handles when location permission is not granted
+        // TODO Handle when location permission is not granted
     }
+}
+
+fun getPostalCode(context: Context, latitude: Double, longitude: Double): String {
+    val geocoder = Geocoder(context, Locale.getDefault())
+    val addresses: List<Address>?
+    try {
+        addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        if (addresses != null) {
+            if (addresses.isNotEmpty()) {
+                return addresses[0].postalCode ?: "-1"
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return ""
 }
