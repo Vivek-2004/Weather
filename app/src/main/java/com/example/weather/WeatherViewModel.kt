@@ -61,7 +61,7 @@ class WeatherViewModel: ViewModel() {
                 updateWeekWeatherData(weekWeatherData)
             }
             catch (e: Exception) {
-                temperature = e.toString()
+                temperature = "Incorrect Location"
             }
         }
     }
