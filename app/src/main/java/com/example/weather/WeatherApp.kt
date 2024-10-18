@@ -38,15 +38,18 @@ fun WeatherApp(weatherViewModel: WeatherViewModel = viewModel()) {
     val city by weatherViewModel::name
 
     WeatherTheme {
-        Column( modifier = Modifier.fillMaxSize().background(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    colorResource(R.color.A),
-                    colorResource(R.color.B),
-                    colorResource(R.color.C),
-                    colorResource(R.color.D),
-                    colorResource(R.color.E)
-                )))
+        Column(
+            modifier = Modifier.fillMaxSize().background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        colorResource(R.color.A),
+                        colorResource(R.color.B),
+                        colorResource(R.color.C),
+                        colorResource(R.color.D),
+                        colorResource(R.color.E)
+                    )
+                )
+            )
         ) {
 
             TopBarWithSearch()
@@ -66,7 +69,8 @@ fun WeatherApp(weatherViewModel: WeatherViewModel = viewModel()) {
                 precipitation = precipitation,
                 visibility = visibility.toString()
             )
-//                    WeekWeatherSection()
+
+            HourlyWeatherRow()
         }
     }
 }
@@ -82,22 +86,34 @@ fun TopBarWithSearch(weatherViewModel: WeatherViewModel = viewModel()) {
     }
 
     TopAppBar(
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp, start = 5.dp, end = 16.dp),
-        colors = TopAppBarDefaults.topAppBarColors( containerColor = Color.Transparent, titleContentColor = Color.White ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 8.dp, start = 5.dp, end = 16.dp),
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            titleContentColor = Color.White
+        ),
         title = {
-            TextField( value = searchQuery, onValueChange = { newQuery -> searchQuery = newQuery },
-                placeholder = { Text("Enter Location...", color = Color.White.copy(alpha = 0.7f) ) },
+            TextField(
+                value = searchQuery,
+                onValueChange = { newQuery -> searchQuery = newQuery },
+                placeholder = { Text("Enter Location...", color = Color.White.copy(alpha = 0.7f)) },
                 singleLine = true,
-                leadingIcon = { Icon( painter = painterResource(id = R.drawable.ic_search),
-                    contentDescription = "Search Icon",
-                    tint = Color.White )
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_search),
+                        contentDescription = "Search Icon",
+                        tint = Color.White
+                    )
                 },
                 trailingIcon = if (searchQuery.isNotEmpty()) {
                     {
                         IconButton(onClick = { onSearch(weatherViewModel, searchQuery) }) {
-                            Icon( painter = painterResource(id = R.drawable.arrow_enter),
+                            Icon(
+                                painter = painterResource(id = R.drawable.arrow_enter),
                                 contentDescription = "Enter",
-                                tint = Color.White )
+                                tint = Color.White
+                            )
                         }
                     }
                 } else null,
@@ -116,15 +132,20 @@ fun TopBarWithSearch(weatherViewModel: WeatherViewModel = viewModel()) {
 }
 
 @Composable
-fun TodayWeatherCard( temperature: String, weatherDescription: String, location: String, day: String) {
-    Card( shape = RoundedCornerShape(24.dp),
+fun TodayWeatherCard(temperature: String, weatherDescription: String, location: String, day: String) {
+    Card(
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.E)),
         elevation = CardDefaults.cardElevation(12.dp),
-        modifier = Modifier.fillMaxWidth().shadow(12.dp, RoundedCornerShape(24.dp)).padding(vertical = 8.dp, horizontal = 16.dp).clip(RoundedCornerShape(24.dp))
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(12.dp, RoundedCornerShape(24.dp))
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clip(RoundedCornerShape(24.dp))
     ) {
-        Column( modifier = Modifier.fillMaxWidth().padding(18.dp)
-        ) {
-            Text( text = location,
+        Column(modifier = Modifier.fillMaxWidth().padding(18.dp)) {
+            Text(
+                text = location,
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
                     color = Color.Blue
@@ -177,46 +198,51 @@ fun TodayWeatherCard( temperature: String, weatherDescription: String, location:
 fun TodayWeatherDetailsSection(
     windSpeed: String,
     humidity: String,
-    sunrise : String,
-    sunset : String,
-    precipitation : String,
-    visibility : String
+    sunrise: String,
+    sunset: String,
+    precipitation: String,
+    visibility: String
 ) {
-    Card( shape = RoundedCornerShape(24.dp),
+    Card(
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.E)),
         elevation = CardDefaults.cardElevation(12.dp),
-        modifier = Modifier.fillMaxWidth().shadow(12.dp, RoundedCornerShape(24.dp)).padding(vertical = 8.dp, horizontal = 16.dp).clip(RoundedCornerShape(24.dp))
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(12.dp, RoundedCornerShape(24.dp))
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clip(RoundedCornerShape(24.dp))
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp)
-        ) {
-            Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly )
-            {
-
-                WeatherDetailItem( label = "Wind", value = "$windSpeed km/h" )
-                WeatherDetailItem( label = "Humidity", value = "$humidity %")
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                WeatherDetailItem(label = "Wind", value = "$windSpeed km/h")
+                WeatherDetailItem(label = "Humidity", value = "$humidity %")
             }
             Spacer(Modifier.height(18.dp))
-
-            Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween )
-            {
-                WeatherDetailItem( label = "Sunrise", value = sunrise )
-
-                Icon(
-                    painter = painterResource(id = R.drawable.sun),
-                    contentDescription = "Weather Icon",
-                    tint = Color(0xFFFFC107),
-                    modifier = Modifier.size(40.dp)
-                )
-
-                WeatherDetailItem( label = "Sunset", value = sunset )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                WeatherDetailItem(label = "Sunrise", value = sunrise)
+                Column(modifier = Modifier.wrapContentHeight().width(145.dp)) {
+                    Icon( modifier = Modifier.wrapContentSize(),
+                        painter = painterResource(id = R.drawable.sunrise_sunset),
+                        contentDescription = "Sunrise and Sunset Icon",
+                        tint = colorResource(R.color.sunrise_sunset),
+                    )
+                }
+                WeatherDetailItem(label = "Sunset", value = sunset)
             }
             Spacer(Modifier.height(18.dp))
-
-            Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly )
-            {
-                WeatherDetailItem( label = "Precipitation", value = "$precipitation mm" )
-                WeatherDetailItem( label = "Visibility", value = "$visibility km" )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                WeatherDetailItem(label = "Precipitation", value = "$precipitation mm")
+                WeatherDetailItem(label = "Visibility", value = "$visibility km")
             }
         }
     }
@@ -244,106 +270,51 @@ fun WeatherDetailItem(label: String, value: String) {
 }
 
 @Composable
-fun WeekWeatherSection() {
-    LazyRow(
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
-    ) {
-        items(7) { index ->
-            WeekWeatherCard(
-                day = "Day ${index + 1}",
-                temperature = "${20 + index}°C",
-                weatherDescription = if (index % 2 == 0) "Sunny" else "Cloudy",
-                windSpeed = "${10 + index} km/h",
-                humidity = "${60 + index}%"
-            )
-            Spacer(modifier = Modifier.width(12.dp))
+fun HourlyWeatherRow() {
+    LazyRow( modifier = Modifier.padding(8.dp) )
+    {
+        items(8){
+            HourlyWeatherCard()
         }
     }
 }
 
 @Composable
-fun WeekWeatherCard(
-    day: String,
-    temperature: String,
-    weatherDescription: String,
-    windSpeed: String,
-    humidity: String
-) {
+fun HourlyWeatherCard() {
     Card(
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.E)),
-        elevation = CardDefaults.cardElevation(6.dp),
-        modifier = Modifier
-            .width(200.dp)
-            .shadow(12.dp, RoundedCornerShape(24.dp))
-            .clip(RoundedCornerShape(24.dp))
-            .padding(4.dp)
-    ) {
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+    ){
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(colorResource(R.color.E), colorResource(R.color.E))
-                    )
-                )
-                .padding(16.dp)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.height(200.dp).padding(vertical = 12.dp, horizontal = 8.dp)
         ) {
+            Spacer(Modifier.height(8.dp))
             Text(
-                text = day,
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Blue
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = temperature,
-                    style = MaterialTheme.typography.headlineLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp,
-                        color = Color.Blue
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.sun),
-                    contentDescription = "Weather Icon",
-                    tint = Color(0xFFFFC107),
-                    modifier = Modifier.size(40.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = weatherDescription,
+                text = "03:00 pm",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     color = Color.Blue
                 )
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Wind: $windSpeed",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Color.Blue
-                    )
+            Icon(
+                painter = painterResource(id = R.drawable.sun),
+                contentDescription = null,
+                tint = Color(0xFFFFC107),
+                modifier = Modifier.size(36.dp)
+            )
+            Text(
+                text = "28.0 °C",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = Color.Blue
                 )
-                Text(
-                    text = "Humidity: $humidity",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Color.Blue
-                    )
+            )
+            Text(
+                text = "4.5 km/h ↗",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = Color.Blue
                 )
-            }
+            )
         }
     }
 }
