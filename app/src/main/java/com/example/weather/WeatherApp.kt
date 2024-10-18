@@ -2,6 +2,7 @@ package com.example.weather
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.example.weather.ui.theme.WeatherTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -36,6 +39,7 @@ fun WeatherApp(weatherViewModel: WeatherViewModel = viewModel()) {
     val visibility by weatherViewModel::visibility
     val day by weatherViewModel::day
     val city by weatherViewModel::name
+    val iconURL by weatherViewModel::iconUrl
 
     WeatherTheme {
         Column(
@@ -58,7 +62,8 @@ fun WeatherApp(weatherViewModel: WeatherViewModel = viewModel()) {
                 temperature = temp,
                 weatherDescription = description,
                 location = city,
-                day = day
+                day = day,
+                imageURL = iconURL
             )
 
             TodayWeatherDetailsSection(
@@ -131,8 +136,9 @@ fun TopBarWithSearch(weatherViewModel: WeatherViewModel = viewModel()) {
     )
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
-fun TodayWeatherCard(temperature: String, weatherDescription: String, location: String, day: String) {
+fun TodayWeatherCard(temperature: String, weatherDescription: String, location: String, day: String, imageURL : String) {
     Card(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.E)),
@@ -175,11 +181,10 @@ fun TodayWeatherCard(temperature: String, weatherDescription: String, location: 
                     )
                 )
                 Spacer(modifier = Modifier.width(14.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.sun),
+                Image(
+                    painter = rememberImagePainter(data = imageURL),
                     contentDescription = "Sunny Icon",
-                    tint = Color(0xFFFFC107),
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(80.dp)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -288,9 +293,8 @@ fun HourlyWeatherCard() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.height(200.dp).padding(vertical = 12.dp, horizontal = 8.dp)
+            modifier = Modifier.height(190.dp).padding(vertical = 8.dp, horizontal = 8.dp)
         ) {
-            Spacer(Modifier.height(8.dp))
             Text(
                 text = "03:00 pm",
                 style = MaterialTheme.typography.bodyLarge.copy(

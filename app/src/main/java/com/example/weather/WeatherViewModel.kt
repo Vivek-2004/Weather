@@ -47,6 +47,9 @@ class WeatherViewModel: ViewModel() {
         private set
     var name by mutableStateOf("City")
         private set
+    
+    var iconUrl by mutableStateOf("Icon")
+        private set
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun fetchWeather(post : String) {
@@ -78,6 +81,11 @@ class WeatherViewModel: ViewModel() {
         lat = weatherData.coord.lat
         lon = weatherData.coord.lon
         name = weatherData.name
+        iconUrl = converterURL(weatherData.weather.first().icon)
+    }
+
+    private fun converterURL(icon : String) : String {
+        return "https://openweathermap.org/img/wn/${icon}@2x.png"
     }
 
     private fun updateWeekWeatherData(weatherData: WeekWeatherResponse){

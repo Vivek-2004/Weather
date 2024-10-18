@@ -51,11 +51,8 @@ android {
 
 dependencies {
 
-    // Navigation between Screens
-    //implementation("androidx.navigation:navigation-compose:2.7.4")
-
-    // Load Images
-    //implementation("io.coil-kt:coil-compose:2.4.0")
+    //Coil Library
+    implementation("io.coil-kt:coil-compose:1.3.2")
 
     // Compose ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
