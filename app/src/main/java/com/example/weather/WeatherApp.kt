@@ -122,9 +122,13 @@ fun TopBarWithSearch(weatherViewModel: WeatherViewModel = viewModel()) {
                         }
                     }
                 } else null,
-                colors = TextFieldDefaults.textFieldColors(
-                    cursorColor = Color.White,
-                    containerColor = Color.White.copy(alpha = 0.3f),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White.copy(alpha = 0.3f),
+                    unfocusedContainerColor = Color.White.copy(alpha = 0.3f),
+                    disabledContainerColor = Color.White.copy(alpha = 0.1f),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White.copy(alpha = 0.8f),
+                    disabledTextColor = Color.White.copy(alpha = 0.5f),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
